@@ -1,0 +1,2 @@
+Server started!
+Type help or help <command> for info
