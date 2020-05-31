@@ -20,6 +20,11 @@ public class WebsocketEndpoint implements SocketBoundary {
     @Autowired
     private CliBoundary cliBoundary;
 
+    public Map<String, Session> getSessionIndex(){
+        return sessionIndex;
+    }
+
+
     @OnOpen
     public void onOpen(Session session) {
         String clientId = session.getId();
@@ -27,7 +32,6 @@ public class WebsocketEndpoint implements SocketBoundary {
         sessionIndex.put(clientId, session);
         this.cliBoundary.printMessage(String.format("[%s]: connected", clientId));
     }
-
 
     private void removeClient(String clientId) {
         sessionIndex.remove(clientId);
