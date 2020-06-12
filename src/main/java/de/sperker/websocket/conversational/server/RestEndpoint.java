@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 // @Produces({MediaType.APPLICATION_JSON})
-@RequestMapping(value = "/list")
+
 public class RestEndpoint {
 
     @Autowired
@@ -29,6 +29,7 @@ public class RestEndpoint {
     }
 
     @GetMapping
+    @RequestMapping(value = "/list")
     public String getTestData() {
         User user = new User("1", "Mike");
 
