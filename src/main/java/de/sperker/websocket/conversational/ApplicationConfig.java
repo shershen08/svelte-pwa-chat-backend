@@ -41,4 +41,5 @@ public class ApplicationConfig {
     public CustomSpringConfigurator customSpringConfigurator() {
         return new CustomSpringConfigurator();
     }
+
 }
