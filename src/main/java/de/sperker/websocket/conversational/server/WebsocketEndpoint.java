@@ -3,6 +3,8 @@ package de.sperker.websocket.conversational.server;
 import de.sperker.websocket.conversational.business.CliBoundary;
 import de.sperker.websocket.conversational.business.SocketBoundary;
 import de.sperker.websocket.conversational.CustomSpringConfigurator;
+import de.sperker.websocket.conversational.model.AppSession;
+import de.sperker.websocket.conversational.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.websocket.*;
@@ -12,15 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@ServerEndpoint(value = "/ws/", configurator = CustomSpringConfigurator.class)
+@ServerEndpoint(value = "/ws", configurator = CustomSpringConfigurator.class)
 public class WebsocketEndpoint implements SocketBoundary {
 
-    private Map<String, Session> sessionIndex = new HashMap();
+    private Map<String, AppSession> sessionIndex = new HashMap();
 
     @Autowired
     private CliBoundary cliBoundary;
 
-    public Map<String, Session> getSessionIndex(){
+    public Map<String, AppSession> getSessionIndex(){
         return sessionIndex;
     }
 
@@ -29,7 +31,8 @@ public class WebsocketEndpoint implements SocketBoundary {
     public void onOpen(Session session) {
         String clientId = session.getId();
         session.getUserProperties().putIfAbsent("clientId", clientId);
-        sessionIndex.put(clientId, session);
+        AppSession appSession = new AppSession(session, new User(clientId, ""));
+        sessionIndex.put(clientId, appSession);
         this.cliBoundary.printMessage(String.format("[%s]: connected", clientId));
     }
 
@@ -68,7 +71,8 @@ public class WebsocketEndpoint implements SocketBoundary {
 
     @Override
     public void sendMessageToClients(String message) {
-        this.sessionIndex.forEach((clientId, session) -> {
+        this.sessionIndex.forEach((clientId, appSession) -> {
+            Session session = appSession.getSession();
             try {
                 session.getBasicRemote().sendText(message);
             } catch (IOException e) {
@@ -78,7 +82,8 @@ public class WebsocketEndpoint implements SocketBoundary {
     }
 
     private void sendMessageToClientsExceptOne(String message, String senderClientId) {
-        this.sessionIndex.forEach((clientId, session) -> {
+        this.sessionIndex.forEach((clientId, appSession) -> {
+            Session session = appSession.getSession();
             if(!clientId.equals(senderClientId)) {
                 try {
                     session.getBasicRemote().sendText(message);
@@ -91,6 +96,6 @@ public class WebsocketEndpoint implements SocketBoundary {
 
     @Override
     public void sendMessageToClient(String clientId, String message) throws IOException {
-        this.sessionIndex.get(clientId).getBasicRemote().sendText(message);
+        this.sessionIndex.get(clientId).getSession().getBasicRemote().sendText(message);
     }
 }

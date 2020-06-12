@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.websocket.Session;
+
 @AllArgsConstructor
-public class User {
+public class AppSession {
     @Getter
     @Setter
-    String id;
+    Session session;
     @Getter
     @Setter
-    String username;
-    @Override
-    public String toString(){
-        return this.getId() + " " + this.getUsername();
-    }
+    User user;
 }
