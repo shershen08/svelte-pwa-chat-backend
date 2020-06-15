@@ -1,6 +1,7 @@
 package de.sperker.websocket.conversational.server;
 
 import de.sperker.websocket.conversational.model.AppSession;
+import de.sperker.websocket.conversational.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -35,21 +39,24 @@ public class RestEndpoint {
 
         if(listUsers.containsKey(id)) {
             listUsers.get(id).getUser().setUsername(name);
-            return new ResponseEntity<>("profile updated", HttpStatus.OK);
+            return new ResponseEntity<>("Profile updated", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("incorrect id", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Incorrect profile id", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(value = "/users")
-    public ResponseEntity<String> getUsersList() {
+    public ResponseEntity<List<User>> getUsersList() {
 
         Map<String, AppSession> listUsers = websocketEndpoint.getSessionIndex();
 
         if(listUsers.isEmpty()) {
-            return new ResponseEntity<>("no users connected", HttpStatus.OK);
+            List<User> emptyList = Collections.emptyList();
+            return new ResponseEntity<>(emptyList, HttpStatus.OK);
         } else {
-            String userList = RestEndpoint.convertWithIteration(listUsers);
+            List<User> userList = listUsers.values().stream()
+                    .map(x -> x.getUser())
+                    .collect(Collectors.toList());
             return new ResponseEntity<>(userList, HttpStatus.OK);
         }
     }
