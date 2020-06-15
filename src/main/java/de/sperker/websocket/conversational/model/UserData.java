@@ -4,14 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.websocket.Session;
 import java.util.Date;
 
 @AllArgsConstructor
-public class AppSession {
-    @Getter
-    @Setter
-    Session session;
+public class UserData {
     @Getter
     @Setter
     User user;

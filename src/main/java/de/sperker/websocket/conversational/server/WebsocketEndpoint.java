@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class WebsocketEndpoint implements SocketBoundary {
     public void onOpen(Session session) {
         String clientId = session.getId();
         session.getUserProperties().putIfAbsent("clientId", clientId);
-        AppSession appSession = new AppSession(session, new User(clientId, ""));
+        AppSession appSession = new AppSession(session, new User(clientId, ""), new Date());
         sessionIndex.put(clientId, appSession);
         this.cliBoundary.printMessage(String.format("[%s]: connected", clientId));
     }
@@ -41,9 +42,14 @@ public class WebsocketEndpoint implements SocketBoundary {
         this.cliBoundary.printMessage(String.format("[%s]: disconnected", clientId));
     }
 
+    private void updateActiveTime(String clientId){
+        sessionIndex.get(clientId).setLastActive(new Date());
+    }
+
     @OnMessage
     public void handleMessage(Session session, String inboundMessage) {
         String clientId = (String) session.getUserProperties().get("clientId");
+        this.updateActiveTime(clientId);
 
         sendMessageToClientsExceptOne(inboundMessage, clientId);
 

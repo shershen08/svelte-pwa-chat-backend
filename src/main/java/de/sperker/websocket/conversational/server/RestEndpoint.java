@@ -2,6 +2,7 @@ package de.sperker.websocket.conversational.server;
 
 import de.sperker.websocket.conversational.model.AppSession;
 import de.sperker.websocket.conversational.model.User;
+import de.sperker.websocket.conversational.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,16 +47,16 @@ public class RestEndpoint {
     }
 
     @GetMapping(value = "/users")
-    public ResponseEntity<List<User>> getUsersList() {
+    public ResponseEntity<List<UserData>> getUsersList() {
 
         Map<String, AppSession> listUsers = websocketEndpoint.getSessionIndex();
+        List<UserData> userList = Collections.emptyList();
 
         if(listUsers.isEmpty()) {
-            List<User> emptyList = Collections.emptyList();
-            return new ResponseEntity<>(emptyList, HttpStatus.OK);
+            return new ResponseEntity<>(userList, HttpStatus.OK);
         } else {
-            List<User> userList = listUsers.values().stream()
-                    .map(x -> x.getUser())
+            userList = listUsers.values().stream()
+                    .map(x -> new UserData(x.getUser(), x.getLastActive()))
                     .collect(Collectors.toList());
             return new ResponseEntity<>(userList, HttpStatus.OK);
         }
