@@ -1,11 +1,11 @@
 package de.sperker.websocket.conversational.server;
 
 import de.sperker.websocket.conversational.model.AppSession;
-import de.sperker.websocket.conversational.model.User;
 import de.sperker.websocket.conversational.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,16 +23,17 @@ public class RestEndpoint {
     @Autowired
     WebsocketEndpoint websocketEndpoint;
 
-    private static String convertWithIteration(Map<String, AppSession> map) {
-        StringBuilder mapAsString = new StringBuilder("");
-        for (String key : map.keySet()) {
-            mapAsString.append(map.get(key).getUser().toString() + ", status: " + map.get(key).getSession().isOpen() + "; ");
-            //mapAsString.append(key + " >> name: " + map.get(key).getUser().getUsername() + ", status: " + map.get(key).getSession().isOpen() + "; ");
-        }
-        // mapAsString.delete(mapAsString.length()-2, mapAsString.length());
-        return mapAsString.toString();
-    }
+//    private static String convertWithIteration(Map<String, AppSession> map) {
+//        StringBuilder mapAsString = new StringBuilder("");
+//        for (String key : map.keySet()) {
+//            mapAsString.append(map.get(key).getUser().toString() + ", status: " + map.get(key).getSession().isOpen() + "; ");
+//            //mapAsString.append(key + " >> name: " + map.get(key).getUser().getUsername() + ", status: " + map.get(key).getSession().isOpen() + "; ");
+//        }
+//        // mapAsString.delete(mapAsString.length()-2, mapAsString.length());
+//        return mapAsString.toString();
+//    }
 
+    @CrossOrigin
     @PostMapping(value = "/profile")
     public ResponseEntity<String> getTestData(@RequestParam String name, @RequestParam String id) {
 
@@ -46,6 +47,7 @@ public class RestEndpoint {
         }
     }
 
+    @CrossOrigin
     @GetMapping(value = "/users")
     public ResponseEntity<List<UserData>> getUsersList() {
 
