@@ -1,30 +1,28 @@
-# Backend from svelte-pwa-chat
+# Backend for svelte-pwa-chat 
 
-Forked from https://github.com/hsperker/conversational-websocket-server
+Java/Spring service to provide websocket base chat API. Also has endpoint to update user profile details and list all users.
+
+Complimentary frontend code: https://github.com/shershen08/svelte-pwa-chat
 
 ## Usage
 
+Build: `mvn build`
+
 Start: `java -jar target/cws.jar`
 
-Connect: `ws://localhost:8080/api/ws/`
-=======
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+App will start on port 8080 (can be adjusted in .properties file)
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+## API
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Connect to websocket: `/api/ws`
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+List users: `/api/users`
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+Set username : POST `/api/profile`
+
+Swagger URL: `/api/swagger-ui.html`
+
+
+## Forked from
+
+Forked from https://github.com/hsperker/conversational-websocket-server
